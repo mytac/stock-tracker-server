@@ -1,10 +1,11 @@
+/***
+ * @Description: 
+ * @Author: mytac
+ * @Date: 2020-07-01 08:28:52
+ */
+const CONFIG=require('../configs');
 var mysql = require('mysql');
-const options = {
-    host: 'localhost',
-    user: 'root',
-    port: '3306',
-    password: '950120admin',
-}
+const options = CONFIG.DATABASE
 
 
 const connect = () => {
