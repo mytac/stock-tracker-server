@@ -12,7 +12,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-const db = require('./utils/db')
+const db = require('./db/db')
+const db_user = require('./db/db_user')
 
 var app = express();
 
@@ -48,8 +49,12 @@ app.use(function (err, req, res, next) {
 });
 
 db.connect()
-  .then(connect => db.createBase(connect))
+  .then(connect => {
+    global.connection = connect
+    console.info('connected!!')
+  })
   .catch(err => {
+    console.error('error in database connection')
     console.log('err', err)
   })
 

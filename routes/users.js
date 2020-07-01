@@ -5,6 +5,7 @@
  */
 var express = require('express');
 var router = express.Router();
+const model = require('../db')
 
 /* GET users li sting. */
 router.get('/', function (req, res, next) {
@@ -12,8 +13,23 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-  console.log(req.body)
   res.send('login');
+});
+
+router.post('/signup', function (req, res, next) {
+  const {
+    username,
+    pswd
+  } = req.body
+  console.log('1', req.body)
+  model.user.addUser({
+    username,
+    pswd
+  }).then(() => {
+
+  }).catch(error => {
+    console.log('error', error)
+  })
 });
 
 
