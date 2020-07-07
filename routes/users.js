@@ -7,6 +7,9 @@ var express = require('express');
 const db_user = require('../db/user')
 const db = require('../utils/db')
 var router = express.Router();
+const {
+  sendSms
+} = require('../utils/index')
 const model = require('../db')
 
 /* GET users li sting. */
@@ -37,8 +40,22 @@ router.post('/register', function (req, res, next) {
 });
 
 router.post('/sendAuthCode', function (req, res, next) {
-  console.log(req.body)
-  res.send('sendAuthCode');
+  const {
+    tel
+  } = req.body
+  const randomCode = (Math.random() * 1000000).toFixed(0)
+  if (!global.tempAuthCode) {
+    global.tempAuthCode = {
+      [tel]: randomCode
+    }
+  } else {
+    global[tel] = randomCode
+  }
+
+  sendSms(tel, randomCode)
+    .then(() => res.send(randomCode))
+    .catch(err => res.send(err))
+
 });
 
 
