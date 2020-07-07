@@ -47,11 +47,6 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-db.connect()
-  .then(connect => db.createBase(connect))
-  .catch(err => {
-    console.log('err', err)
-  })
 
 
 module.exports = app;

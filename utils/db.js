@@ -24,6 +24,13 @@ const connect = () => {
 
 }
 
+const selectDB=connection=>new Promise((res, rej) => {
+    connection.query('USE stock', function (error, results, fields) {
+        if (error) rej(error);
+        res(connection)
+    });
+})
+
 const createBase = (connection) => {
     return new Promise((res, rej) => {
         connection.query('CREATE DATABASE stock', function (error, results, fields) {
@@ -31,11 +38,21 @@ const createBase = (connection) => {
             res(results)
         });
     })
+}
 
-
+const query= (connection,sql) => {
+    return new Promise((res, rej) => {
+        if(!connection||!connection.query) rej('no connection')
+        connection.query(sql, function (error, results, fields) {
+            if (error) rej(error);
+            res(results)
+        });
+    })
 }
 
 module.exports = {
     connect,
     createBase,
+    query,
+    selectDB,
 }
