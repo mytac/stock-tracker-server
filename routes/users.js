@@ -49,14 +49,29 @@ router.post('/sendAuthCode', function (req, res, next) {
       [tel]: randomCode
     }
   } else {
-    global[tel] = randomCode
+    global.tempAuthCode[tel] = randomCode
   }
+
 
   sendSms(tel, randomCode)
     .then(() => res.send(randomCode))
+    .then(()=>{
+      setTimeout(()=>{
+        delete global.tempAuthCode[tel]
+      },120000)
+    })
     .catch(err => res.send(err))
 
 });
+
+router.post('/checkAuthCode', function (req, res, next) {
+  const {code,tel}=req.body
+  if(global.tempAuthCode&&global.tempAuthCode[tel]===code){
+    res.status(200).send('success')
+  }else{
+    res.status(403).json({ error: 'invalid code' })
+  }
+})
 
 
 module.exports = router;
