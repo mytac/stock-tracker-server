@@ -54,13 +54,13 @@ router.post('/sendAuthCode', function (req, res, next) {
 
 
   sendSms(tel, randomCode)
-    .then(() => res.send(randomCode))
     .then(()=>{
       setTimeout(()=>{
         delete global.tempAuthCode[tel]
       },120000)
     })
-    .catch(err => res.send(err))
+    .then(() => res.send(randomCode))
+    .catch(err => res.status(403).send(err))
 
 });
 

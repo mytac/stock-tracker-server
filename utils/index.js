@@ -107,17 +107,21 @@ const sendSms = (tel, authCode) => {
 
     return new Promise((resolve, reject) => {
         // 通过client对象调用想要访问的接口，需要传入请求对象以及响应回调函数
-        client.SendSms(req, function (err, response) {
-            // 请求异常返回，打印异常信息
-            if (err) {
-                console.log(err);
-                reject(err)
-            }
-            const res = response.to_json_string()
-            // 请求正常返回，打印response对象
-            console.log(res);
-            resolve(res)
-        });
+        if(!tel||tel.length!==11){reject('tel error')}
+        else{
+            client.SendSms(req, function (err, response) {
+                // 请求异常返回，打印异常信息
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                }
+                const res = response.to_json_string()
+                // 请求正常返回，打印response对象
+                console.log(res);
+                resolve(res)
+            });
+        }
+        
     })
 
 
