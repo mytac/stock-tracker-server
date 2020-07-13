@@ -15,6 +15,16 @@ const register=(con,params)=>{
     return query(con,sql)
 }
 
+const bindTel=(con,params)=>{
+    const {account,tel}=params
+    console.log('params',params)
+    const sql1=`SELECT account FROM user WHERE account="${account}" `
+    return query(con,sql1).then((data)=>{
+
+    })
+}
+
 module.exports={
-    register
+    register,
+    bindTel
 }

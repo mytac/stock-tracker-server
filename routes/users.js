@@ -29,14 +29,41 @@ router.post('/register', function (req, res, next) {
     account
   } = req.body
 
+  if(!pswd||!account){
+    res.status(403).send('invalid input')
+  }
+
   db.connect()
     .then(con => db.selectDB(con))
     .then(con => db_user.register(con, {
       pswd,
       account
     }))
-    .then(data => res.send(data))
-    .catch(err => res.send(err))
+    .then(data => res.status(200).send('success'))
+    .catch(err => res.status(403).send(err.code||err.sql))
+});
+
+router.post('/bindTel', function (req, res, next) {
+  const {
+    tel,
+    account
+  } = req.body
+
+  if(!tel||!account){
+    res.status(403).send('invalid input')
+  }
+
+  db.connect()
+    .then(con => db.selectDB(con))
+    .then(con => db_user.bindTel(con, {
+      tel,
+      account
+    }))
+    .then(data => res.status(200).send('success'))
+    .catch(err =>{
+      console.log(err)
+      return res.status(403).send(err.code||err.sql)
+    } )
 });
 
 router.post('/sendAuthCode', function (req, res, next) {
