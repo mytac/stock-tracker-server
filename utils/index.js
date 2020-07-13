@@ -22,6 +22,15 @@ const sortByAscIICode = (obj) => {
     return res;
 };
 
+const genRamdomCode=(len=10)=>{// 含字母数字特殊字符的串
+    const str='qwertyuiop[]|asdfghjklzxcvbnm`1234567890-[!@#$%^*()_'
+    let res=''
+    Array(len).fill(1).forEach(item=>{
+      const pos=(Math.random()*50).toFixed(0)
+      res+=str[pos]
+    })
+    return res
+  }
 const qsStringify = (obj) => {
     let str = "";
     const keys = Object.keys(obj);
@@ -142,5 +151,5 @@ const eg = {
 
 
 module.exports = {
-    sendSms
+    sendSms,genRamdomCode
 }
