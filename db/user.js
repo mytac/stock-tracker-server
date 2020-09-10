@@ -7,11 +7,8 @@ const {query}=require('../utils/db')
  // 注册
 const register=(con,params)=>{
     const {pswd,account}=params
-    console.log('pswd',pswd)
-    console.log('account',account)
     const sql=`INSERT INTO user(account,pswd) 
     VALUES('${account}','${pswd}')`
-    console.log('sql',sql)
     return query(con,sql)
 }
 
@@ -24,7 +21,20 @@ const bindTel=(con,params)=>{
     })
 }
 
+const login=(con,params)=>{
+    const {pswd,account}=params
+    const sql=`SELECT pswd FROM user WHERE account="${account}" `
+    return query(con,sql).then((data)=>{
+        if(data===pswd){
+            return 'success'
+        }else{
+            return 'error_input'
+        }
+    })
+}
+ 
 module.exports={
     register,
-    bindTel
+    bindTel,
+    login
 }

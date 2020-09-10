@@ -8,8 +8,9 @@ const db_user = require('../db/user')
 const db = require('../utils/db')
 var router = express.Router();
 const {
-  sendSms
-} = require('../utils/index')
+  sendSms,
+  errorMsg
+} = require('../utils')
 const model = require('../db')
 
 /* GET users li sting. */
@@ -18,8 +19,21 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-  res.send('login');
-  next();
+  const {
+    pswd,
+    account
+  } = req.body
+  if (!pswd || !account) {
+    res.status(403).send(errorMsg(4011))
+  }
+  db.connect()
+    .then(con => db.selectDB(con))
+    .then(con => db_user.register(con, {
+      pswd,
+      account
+    }))
+    .then(data => res.status(200).send('success'))
+    .catch(err => res.status(403).send(err.code || err.sql))
 });
 
 
@@ -29,7 +43,7 @@ router.post('/register', function (req, res, next) {
     account
   } = req.body
 
-  if(!pswd||!account){
+  if (!pswd || !account) {
     res.status(403).send('invalid input')
   }
 
@@ -40,7 +54,7 @@ router.post('/register', function (req, res, next) {
       account
     }))
     .then(data => res.status(200).send('success'))
-    .catch(err => res.status(403).send(err.code||err.sql))
+    .catch(err => res.status(403).send(err.code || err.sql))
 });
 
 router.post('/bindTel', function (req, res, next) {
@@ -49,7 +63,7 @@ router.post('/bindTel', function (req, res, next) {
     account
   } = req.body
 
-  if(!tel||!account){
+  if (!tel || !account) {
     res.status(403).send('invalid input')
   }
 
@@ -60,10 +74,10 @@ router.post('/bindTel', function (req, res, next) {
       account
     }))
     .then(data => res.status(200).send('success'))
-    .catch(err =>{
+    .catch(err => {
       console.log(err)
-      return res.status(403).send(err.code||err.sql)
-    } )
+      return res.status(403).send(err.code || err.sql)
+    })
 });
 
 router.post('/sendAuthCode', function (req, res, next) {
@@ -81,10 +95,10 @@ router.post('/sendAuthCode', function (req, res, next) {
 
 
   sendSms(tel, randomCode)
-    .then(()=>{
-      setTimeout(()=>{
+    .then(() => {
+      setTimeout(() => {
         delete global.tempAuthCode[tel]
-      },120000)
+      }, 120000)
     })
     .then(() => res.send(randomCode))
     .catch(err => res.status(403).send(err))
@@ -92,11 +106,16 @@ router.post('/sendAuthCode', function (req, res, next) {
 });
 
 router.post('/checkAuthCode', function (req, res, next) {
-  const {code,tel}=req.body
-  if(global.tempAuthCode&&global.tempAuthCode[tel]===code){
+  const {
+    code,
+    tel
+  } = req.body
+  if (global.tempAuthCode && global.tempAuthCode[tel] === code) {
     res.status(200).send('success')
-  }else{
-    res.status(403).json({ error: 'invalid code' })
+  } else {
+    res.status(403).json({
+      error: 'invalid code'
+    })
   }
 })
 

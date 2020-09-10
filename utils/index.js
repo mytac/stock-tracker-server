@@ -1,4 +1,5 @@
 const hmacsha1 = require('hmacsha1');
+const ERROR_CODE_MAP=require('../consts/ERROR_CODE')
 const tencentcloud = require("tencentcloud-sdk-nodejs");
 const {
     TENCENT
@@ -149,7 +150,9 @@ const eg = {
     "RequestId": "bf95de5a-0fea-4a6c-9dd7-fc656471cb75"
 }
 
+const errorMsg=(code=9999)=>ERROR_CODE_MAP[code]||'Network Failed'
+
 
 module.exports = {
-    sendSms,genRamdomCode
+    sendSms,genRamdomCode,errorMsg
 }
